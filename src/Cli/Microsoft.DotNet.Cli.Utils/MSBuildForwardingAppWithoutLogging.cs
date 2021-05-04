@@ -59,6 +59,15 @@ namespace Microsoft.DotNet.Cli.Utils
             {
                 InitializeForOutOfProcForwarding();
             }
+
+            if (!DoNotUseMSBuildServer)
+            {
+                // Set environment variables to always use MSBuild node which will serve as simple version of MSBuild server
+                // allowing better in-memory caching in hot scenarios.
+                EnvironmentVariable("MSBUILDNOINPROCNODE", "1");
+                // TODO: delete after https://github.com/dotnet/msbuild/pull/6385 is inserted into SDK
+                EnvironmentVariable("MSBUILD_PROJECTINSTANCE_TRANSLATION_MODE", "full");
+            }
         }
 
         private void InitializeForOutOfProcForwarding()
